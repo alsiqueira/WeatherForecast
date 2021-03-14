@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { SafeAreaView, FlatList, StyleSheet} from 'react-native'
+import * as Location from 'expo-location'
+
 import Conditions from '../../components/Conditions'
 import Forecast from '../../components/Forecast'
 import Header from '../../components/Header'
@@ -90,18 +92,45 @@ const mylist = [
   ]
 
 export default function Home(){
+  const [errorMsg, setErrorMsg] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+
+  useEffect(() => {
+    
+    (async ()=>{
+      let { status } = await Location.requestPermissionsAsync()
+
+     if(status !== 'granted'){
+       setErrorMsg('Permissão negada para acessar localização')
+       setLoading(false)
+       return
+     }
+
+     let location = await Location.getCurrentPositionAsync({})
+
+    //  console.log(location.coords.latitude)
+
+    
+
+    })()
+
+  }, [])
+
+
     return(
     <SafeAreaView style={styles.container}>
         <Menu />
         <Header />
         <Conditions/>
         <FlatList 
-         style={styles.list}
-         data={mylist}
-         keyExtractor={ item => item.date}
-         renderItem={({ item }) => <Forecast  data={item}/>}
-         horizontal={true}
-         contentContainerStyle={{ paddingBottom: '5%'}}
+            style={styles.list}
+            data={mylist}
+            keyExtractor={ item => item.date}
+            renderItem={({ item }) => <Forecast  data={item}/>}
+            horizontal={true}
+            contentContainerStyle={{ paddingBottom: '5%'}}
+            showsHorizontalScrollIndicator={false}
         />
     </SafeAreaView>
     )
