@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Text, StyleSheet} from 'react-native'
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons'
 
-export default function Conditions() {
+export default function Conditions({ dados}) {
     return (
 
         <View style={styls.container}>
@@ -13,7 +13,7 @@ export default function Conditions() {
                     size={23}
                     color='#1ed6ff'
                     />
-                    <Text>7 km/h</Text>
+                    <Text>{dados.results.wind_speedy}</Text>
                 </View>
 
                 <View style={styls.condition}>
@@ -22,7 +22,7 @@ export default function Conditions() {
                     size={23}
                     color='#1ed6ff'
                     />
-                    <Text>5:22 am</Text>
+                    <Text>{dados.results.sunrise}</Text>
                 </View>
 
                 <View style={styls.condition}>
@@ -31,7 +31,7 @@ export default function Conditions() {
                     size={23}
                     color='#1ed6ff'
                     />
-                    <Text>6:00 pm</Text>
+                    <Text>{dados.results.sunset}</Text>
                 </View>
 
                 <View style={styls.condition}>
@@ -40,7 +40,7 @@ export default function Conditions() {
                     size={23}
                     color='#1ed6ff'
                     />
-                    <Text>64</Text>
+                    <Text>{dados.results.humidity}</Text>
                 </View>
            
         </View>

@@ -4,20 +4,20 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { View, Text, StyleSheet } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 
-export default function Header() {
+export default function Header({ background, dados, icon }) {
     return (
         <LinearGradient 
         style={styles.herder}
-        colors={['#1ed6ff', '#97c1ff']}
+        colors={background}
         >
-            <Text style={styles.date}>20/02/20021</Text>
-            <Text style={styles.city}>Catanduva</Text>
+            <Text style={styles.date}>{dados.results.date}</Text>
+            <Text style={styles.city}>{dados.results.city_name}</Text>
             <Ionicons 
-                name="cloud"
-                color="#fff"
+                name={icon.name}
+                color={icon.color}
                 size={150}
             />
-            <Text style={styles.temp}>30°</Text>
+            <Text style={styles.temp}>{dados.results.temp}°</Text>
 
         </LinearGradient>
     )

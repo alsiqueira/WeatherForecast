@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
 
-import { SafeAreaView, FlatList, StyleSheet} from 'react-native'
+import { SafeAreaView, FlatList, StyleSheet, View, Text} from 'react-native'
 import * as Location from 'expo-location'
+
+import api, { key } from '../../services/api'
 
 import Conditions from '../../components/Conditions'
 import Forecast from '../../components/Forecast'
@@ -92,8 +94,12 @@ const mylist = [
   ]
 
 export default function Home(){
+  const [dados,setDados] = useState([])
   const [errorMsg, setErrorMsg] = useState(null)
   const [loading, setLoading] = useState(true)
+ 
+  const [icon, setIcon] = useState({name: 'cloud', color: '#fff'})
+  const [background, setBackground] = useState(['#1ed6ff', '#97c1ff'])
 
 
   useEffect(() => {
@@ -109,32 +115,93 @@ export default function Home(){
 
      let location = await Location.getCurrentPositionAsync({})
 
-    //  console.log(location.coords.latitude)
+     const response = await api.get(`/weather?key=${key}&lat=${location.coords.latitude}&lon=${location.coords.longitude}`)
+
+      setDados(response.data);
+
+      if(response.data.results.currently === 'noite'){
+        setBackground(['#0c3741', '#0f2f61'])
+      }
+  
+      switch(response.data.results.condition_slug){
+        case 'clear_day':
+          setIcon({
+            name: 'partly-sunny',
+            color: '#ffb300'
+          })
+          break
+  
+          case 'rain':
+          setIcon({
+            name: 'rainy',
+            color: '#fff'
+          })
+          break
+  
+          case 'storm':
+            setIcon({
+              name: 'rainy',
+              color: '#fff'
+            })
+          break
+      }
+     
+    //  
+
+    
+      console.log(dados)
+    
+    setLoading(false)
 
     
 
+    
+
+
+
+    //  console.log(location.coords.latitude)
+//https://api.hgbrasil.com/weather?key=cb5fa221&lat=-23.682&lon=-46.875
+
+
     })()
+
+ 
+
 
   }, [])
 
 
+  if(loading){
     return(
-    <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
+        <Text style={{ fontSize: 17}}>Carregando dados ...</Text>
+
+      </View>
+    )
+  }
+
+    return(
+    
+        <SafeAreaView style={styles.container}>
         <Menu />
-        <Header />
-        <Conditions/>
+      <Header background={background}  dados={dados} icon={icon}/>
+        <Conditions  dados={dados} />
         <FlatList 
             style={styles.list}
-            data={mylist}
+            data={dados.results.forecast}
             keyExtractor={ item => item.date}
-            renderItem={({ item }) => <Forecast  data={item}/>}
+            renderItem={({ item }) => <Forecast  data={item} />}
             horizontal={true}
             contentContainerStyle={{ paddingBottom: '5%'}}
             showsHorizontalScrollIndicator={false}
+
         />
     </SafeAreaView>
+      
+    
     )
 }
+      
 
 const styles = StyleSheet.create({
     container:{
@@ -149,3 +216,4 @@ const styles = StyleSheet.create({
         marginLeft: 10,
     }
 })
+
